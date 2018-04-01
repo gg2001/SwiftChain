@@ -1,3 +1,15 @@
+// WWDC2018 Scholarship Submission by Gautham Elango
+// SwiftChain is a simple cryptocurrency in a Swift playground written in under 400 lines.
+// It uses a Blockchain to record transactions, public keys (account numbers) and private keys (backup codes) to secure funds, and proof of work mining to produce new coins. It is similar to a typical cryptocurrency except that it doesn't allow transactions over internet, lacks security, and isn't as robust.
+// This can act as a demonstration of how a Blockchain functions.
+// XSC is the currency ticker and there is a maximum supply of 21000000XSC, similar to Bitcoin. The mining reward is 50XSC.
+// The Blockchain is only stored in a dictionary so once this playground is stopped the data will be erased, and a new Blockchain will be created when you start it up again.
+// Open the Assistant Editor to interact with the Blockchain. There are two wallets running side by side which allows you to see transactions happening in real time. Make sure it is opened wide since the size of the view is quite large (768x1024).
+// If you open the debug area you can explore the Blockchain, and see who owns what. 0000 is the network address from which mined coins are sent. No one can login to it.
+// In the Assitant editor you can send, receive and mine coins. You can also create new accounts and login back to an account you used previously by entering the backup code associated with that account. Account numbers are typically 4 digits and backup codes are typically 3 digits.
+// This playground was tested and developed on Xcode 9.2.
+// Important note: This cryptocurrency doesn't support decimals so attempting to send fractions of a coin will crash the playground. Also attempting to spend non-existent coins will crash the playground. This demostrates the integrity of Blockchains.
+
 import UIKit
 import PlaygroundSupport
 
@@ -105,6 +117,8 @@ class MyViewController : UIViewController {
     var login2 = UITextField()
     var backuplogin2 = UIButton(type: .system)
     var new2 = UIButton(type: .system)
+    var wallet1 = UILabel()
+    var wallet2 = UILabel()
     
     public override func loadView() {
         transaction(from: "0000", to: "\(genesisAddress)", amount: 50, type: "genesis")
@@ -180,6 +194,14 @@ class MyViewController : UIViewController {
         backuplogin2.setTitle("Login", for: .normal)
         backuplogin2.addTarget(self, action: #selector(loginFunc2), for: .touchUpInside)
         backuplogin2.translatesAutoresizingMaskIntoConstraints = false
+        wallet1.text = "Wallet 1"
+        wallet1.textColor = .black
+        wallet1.font = wallet1.font.withSize(40)
+        wallet1.translatesAutoresizingMaskIntoConstraints = false
+        wallet2.text = "Wallet 2"
+        wallet2.textColor = .black
+        wallet2.font = wallet2.font.withSize(40)
+        wallet2.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(account1)
         view.addSubview(balance1)
         view.addSubview(mine1)
@@ -200,6 +222,8 @@ class MyViewController : UIViewController {
         view.addSubview(backup2)
         view.addSubview(login2)
         view.addSubview(backuplogin2)
+        view.addSubview(wallet1)
+        view.addSubview(wallet2)
         NSLayoutConstraint.activate([
             account1.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             account1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -240,7 +264,11 @@ class MyViewController : UIViewController {
             login2.topAnchor.constraint(equalTo: view.topAnchor, constant: 340),
             login2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
             backuplogin2.topAnchor.constraint(equalTo: view.topAnchor, constant: 380),
-            backuplogin2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404)
+            backuplogin2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
+            wallet1.topAnchor.constraint(equalTo: view.topAnchor, constant: 440),
+            wallet1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 102),
+            wallet2.topAnchor.constraint(equalTo: view.topAnchor, constant: 440),
+            wallet2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 486)
             ])
         self.view = view
     }
