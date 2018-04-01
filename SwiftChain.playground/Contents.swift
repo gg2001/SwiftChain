@@ -44,8 +44,10 @@ public class BlockChain {
 let swiftchain = BlockChain()
 public func transaction(from: String, to: String, amount: Int, type: String) {
     if accounts[from] == nil {
+        print("Invalid transaction\n")
         exit(0)
     } else if accounts[from]!-amount < 0 {
+        print("Invalid transaction\n")
         exit(0)
     } else {
         accounts.updateValue(accounts[from]!-amount, forKey: from)
@@ -61,6 +63,7 @@ public func transaction(from: String, to: String, amount: Int, type: String) {
         swiftchain.addBlock(data: "From: \(from); To: \(to); Amount: \(amount)XSC")
     }
     if amount < 0 {
+        print("Invalid transaction\n")
         exit(0)
     }
 }
@@ -91,6 +94,7 @@ class MyViewController : UIViewController {
     var backup1 = UILabel()
     var login1 = UITextField()
     var backuplogin1 = UIButton(type: .system)
+    var new1 = UIButton(type: .system)
     
     public override func loadView() {
         transaction(from: "0000", to: "\(genesisAddress)", amount: 50, type: "genesis")
@@ -100,8 +104,6 @@ class MyViewController : UIViewController {
         
         let view = UIView()
         view.backgroundColor = .white
-        
-        //account1.frame = CGRect(x: 10, y: 200, width: 200, height: 20)
         account1.text = "Account: \(genesisAddress)"
         account1.textColor = .black
         account1.translatesAutoresizingMaskIntoConstraints = false
@@ -122,6 +124,9 @@ class MyViewController : UIViewController {
         transact1.setTitle("Send", for: .normal)
         transact1.addTarget(self, action: #selector(sendFunc1), for: .touchUpInside)
         transact1.translatesAutoresizingMaskIntoConstraints = false
+        new1.setTitle("Logout and create new account", for: .normal)
+        new1.addTarget(self, action: #selector(newFunc1), for: .touchUpInside)
+        new1.translatesAutoresizingMaskIntoConstraints = false
         backup1.text = "Backup code: \(genesisKey)"
         backup1.textColor = .black
         backup1.translatesAutoresizingMaskIntoConstraints = false
@@ -138,11 +143,10 @@ class MyViewController : UIViewController {
         view.addSubview(send1)
         view.addSubview(amount1)
         view.addSubview(transact1)
+        view.addSubview(new1)
         view.addSubview(backup1)
         view.addSubview(login1)
         view.addSubview(backuplogin1)
-        //let margins = view.layoutMarginsGuide
-        
         NSLayoutConstraint.activate([
             account1.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             account1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -156,14 +160,15 @@ class MyViewController : UIViewController {
             amount1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             transact1.topAnchor.constraint(equalTo: view.topAnchor, constant: 140),
             transact1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            backup1.topAnchor.constraint(equalTo: view.topAnchor, constant: 220),
+            new1.topAnchor.constraint(equalTo: view.topAnchor, constant: 220),
+            new1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            backup1.topAnchor.constraint(equalTo: view.topAnchor, constant: 300),
             backup1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            login1.topAnchor.constraint(equalTo: view.topAnchor, constant: 260),
+            login1.topAnchor.constraint(equalTo: view.topAnchor, constant: 340),
             login1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            backuplogin1.topAnchor.constraint(equalTo: view.topAnchor, constant: 300),
+            backuplogin1.topAnchor.constraint(equalTo: view.topAnchor, constant: 380),
             backuplogin1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
             ])
-        
         self.view = view
     }
     @objc func mineFunc1() {
@@ -173,15 +178,19 @@ class MyViewController : UIViewController {
         chainState()
     }
     @objc func sendFunc1() {
-        transaction(from: "\(genesisAddress)", to: "\(send1.text!)", amount: Int(amount1.text!)!, type: "normal")
-        balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
-        print("\(amount1.text!)XSC sent from \(genesisAddress) to \(send1.text!)")
-        chainState()
-        send1.text = ""
-        amount1.text = ""
+        if send1.text == "" || amount1.text == "" {
+            print("Please enter a value\n")
+        } else {
+            transaction(from: "\(genesisAddress)", to: "\(send1.text!)", amount: Int(amount1.text!)!, type: "normal")
+            balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
+            print("\(amount1.text!)XSC sent from \(genesisAddress) to \(send1.text!)")
+            chainState()
+            send1.text = ""
+            amount1.text = ""
+        }
     }
-    @objc func loginFunc1() {
-        genesisKey = Int(login1.text!)!
+    @objc func newFunc1() {
+        genesisKey = random(201..<999)
         genesisAddress = genesisKey * 5
         if accounts[String(describing: genesisAddress)] == nil {
             account1.text = "Account: \(genesisAddress)"
@@ -193,9 +202,28 @@ class MyViewController : UIViewController {
             backup1.text = "Backup code: \(genesisKey)"
         }
         print("Logged into account \(genesisAddress) with wallet 1\n")
-        login1.text = ""
+    }
+    @objc func loginFunc1() {
+        if login1.text == "" {
+            print("Please enter a value\n")
+        } else {
+            genesisKey = Int(login1.text!)!
+            genesisAddress = genesisKey * 5
+            if accounts[String(describing: genesisAddress)] == nil {
+                account1.text = "Account: \(genesisAddress)"
+                balance1.text = "Balance: 0XSC"
+                backup1.text = "Backup code: \(genesisKey)"
+            } else {
+                account1.text = "Account: \(genesisAddress)"
+                balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
+                backup1.text = "Backup code: \(genesisKey)"
+            }
+            print("Logged into account \(genesisAddress) with wallet 1\n")
+            login1.text = ""
+        }
     }
 }
-let viewController = MyViewController()
-viewController.preferredContentSize = CGSize(width: 768, height: 1024)
-PlaygroundPage.current.liveView = viewController
+
+let vc = MyViewController()
+vc.preferredContentSize = CGSize(width: 768, height: 1024)
+PlaygroundPage.current.liveView = vc
