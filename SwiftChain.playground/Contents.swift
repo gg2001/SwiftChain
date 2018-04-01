@@ -95,6 +95,16 @@ class MyViewController : UIViewController {
     var login1 = UITextField()
     var backuplogin1 = UIButton(type: .system)
     var new1 = UIButton(type: .system)
+    var account2 = UILabel()
+    var balance2 = UILabel()
+    var mine2 = UIButton(type: .system)
+    var send2 = UITextField()
+    var amount2 = UITextField()
+    var transact2 = UIButton(type: .system)
+    var backup2 = UILabel()
+    var login2 = UITextField()
+    var backuplogin2 = UIButton(type: .system)
+    var new2 = UIButton(type: .system)
     
     public override func loadView() {
         transaction(from: "0000", to: "\(genesisAddress)", amount: 50, type: "genesis")
@@ -137,6 +147,39 @@ class MyViewController : UIViewController {
         backuplogin1.setTitle("Login", for: .normal)
         backuplogin1.addTarget(self, action: #selector(loginFunc1), for: .touchUpInside)
         backuplogin1.translatesAutoresizingMaskIntoConstraints = false
+        account2.text = "Account: \(testAddress)"
+        account2.textColor = .black
+        account2.translatesAutoresizingMaskIntoConstraints = false
+        balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+        balance2.textColor = .black
+        balance2.translatesAutoresizingMaskIntoConstraints = false
+        mine2.setTitle("Mine", for: .normal)
+        mine2.addTarget(self, action: #selector(mineFunc2), for: .touchUpInside)
+        mine2.translatesAutoresizingMaskIntoConstraints = false
+        send2.borderStyle = .roundedRect
+        send2.placeholder = "Send to account number"
+        send2.keyboardType = UIKeyboardType.numberPad
+        send2.translatesAutoresizingMaskIntoConstraints = false
+        amount2.borderStyle = .roundedRect
+        amount2.placeholder = "Amount of coins to send "
+        amount2.keyboardType = UIKeyboardType.numberPad
+        amount2.translatesAutoresizingMaskIntoConstraints = false
+        transact2.setTitle("Send", for: .normal)
+        transact2.addTarget(self, action: #selector(sendFunc2), for: .touchUpInside)
+        transact2.translatesAutoresizingMaskIntoConstraints = false
+        new2.setTitle("Logout and create new account", for: .normal)
+        new2.addTarget(self, action: #selector(newFunc2), for: .touchUpInside)
+        new2.translatesAutoresizingMaskIntoConstraints = false
+        backup2.text = "Backup code: \(testKey)"
+        backup2.textColor = .black
+        backup2.translatesAutoresizingMaskIntoConstraints = false
+        login2.borderStyle = .roundedRect
+        login2.placeholder = "Login to account with backup code"
+        login2.keyboardType = UIKeyboardType.numberPad
+        login2.translatesAutoresizingMaskIntoConstraints = false
+        backuplogin2.setTitle("Login", for: .normal)
+        backuplogin2.addTarget(self, action: #selector(loginFunc2), for: .touchUpInside)
+        backuplogin2.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(account1)
         view.addSubview(balance1)
         view.addSubview(mine1)
@@ -147,6 +190,16 @@ class MyViewController : UIViewController {
         view.addSubview(backup1)
         view.addSubview(login1)
         view.addSubview(backuplogin1)
+        view.addSubview(account2)
+        view.addSubview(balance2)
+        view.addSubview(mine2)
+        view.addSubview(send2)
+        view.addSubview(amount2)
+        view.addSubview(transact2)
+        view.addSubview(new2)
+        view.addSubview(backup2)
+        view.addSubview(login2)
+        view.addSubview(backuplogin2)
         NSLayoutConstraint.activate([
             account1.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             account1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -167,7 +220,27 @@ class MyViewController : UIViewController {
             login1.topAnchor.constraint(equalTo: view.topAnchor, constant: 340),
             login1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             backuplogin1.topAnchor.constraint(equalTo: view.topAnchor, constant: 380),
-            backuplogin1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
+            backuplogin1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            account2.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            account2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
+            balance2.leadingAnchor.constraint(equalTo: account2.trailingAnchor, constant: 20),
+            balance2.firstBaselineAnchor.constraint(equalTo: account2.firstBaselineAnchor),
+            mine2.leadingAnchor.constraint(equalTo: balance2.trailingAnchor, constant: 20),
+            mine2.firstBaselineAnchor.constraint(equalTo: balance2.firstBaselineAnchor),
+            send2.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
+            send2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
+            amount2.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            amount2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
+            transact2.topAnchor.constraint(equalTo: view.topAnchor, constant: 140),
+            transact2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
+            new2.topAnchor.constraint(equalTo: view.topAnchor, constant: 220),
+            new2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
+            backup2.topAnchor.constraint(equalTo: view.topAnchor, constant: 300),
+            backup2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
+            login2.topAnchor.constraint(equalTo: view.topAnchor, constant: 340),
+            login2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404),
+            backuplogin2.topAnchor.constraint(equalTo: view.topAnchor, constant: 380),
+            backuplogin2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 404)
             ])
         self.view = view
     }
@@ -182,7 +255,16 @@ class MyViewController : UIViewController {
             print("Please enter a value\n")
         } else {
             transaction(from: "\(genesisAddress)", to: "\(send1.text!)", amount: Int(amount1.text!)!, type: "normal")
-            balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
+            if accounts[String(describing: genesisAddress)] == nil {
+                balance1.text = "Balance: 0XSC"
+            } else {
+                balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
+            }
+            if accounts[String(describing: testAddress)] == nil {
+                balance2.text = "Balance: 0XSC"
+            } else {
+                balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+            }
             print("\(amount1.text!)XSC sent from \(genesisAddress) to \(send1.text!)")
             chainState()
             send1.text = ""
@@ -220,6 +302,66 @@ class MyViewController : UIViewController {
             }
             print("Logged into account \(genesisAddress) with wallet 1\n")
             login1.text = ""
+        }
+    }
+    @objc func mineFunc2() {
+        transaction(from: "0000", to: "\(testAddress)", amount: 50, type: "normal")
+        balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+        print("New block mined by: \(testAddress)")
+        chainState()
+    }
+    @objc func sendFunc2() {
+        if send2.text == "" || amount2.text == "" {
+            print("Please enter a value\n")
+        } else {
+            transaction(from: "\(testAddress)", to: "\(send2.text!)", amount: Int(amount2.text!)!, type: "normal")
+            if accounts[String(describing: genesisAddress)] == nil {
+                balance1.text = "Balance: 0XSC"
+            } else {
+                balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
+            }
+            if accounts[String(describing: testAddress)] == nil {
+                balance2.text = "Balance: 0XSC"
+            } else {
+                balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+            }
+            print("\(amount2.text!)XSC sent from \(testAddress) to \(send2.text!)")
+            chainState()
+            send2.text = ""
+            amount2.text = ""
+        }
+    }
+    @objc func newFunc2() {
+        testKey = random(201..<999)
+        testAddress = testKey * 5
+        if accounts[String(describing: testAddress)] == nil {
+            account2.text = "Account: \(testAddress)"
+            balance2.text = "Balance: 0XSC"
+            backup2.text = "Backup code: \(testKey)"
+        } else {
+            account2.text = "Account: \(testAddress)"
+            balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+            backup2.text = "Backup code: \(testKey)"
+        }
+        print("Logged into account \(testAddress) with wallet 2\n")
+    }
+    @objc func loginFunc2() {
+        if login2.text == "" {
+            print("Please enter a value\n")
+        } else {
+            testKey = Int(login2.text!)!
+            testAddress = testKey * 5
+            if accounts[String(describing: testAddress)] == nil {
+                account2.text = "Account: \(testAddress)"
+                balance2.text = "Balance: 0XSC"
+                backup2.text = "Backup code: \(testKey)"
+            } else {
+                account2.text = "Account: \(testAddress)"
+                balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+                backup2.text = "Backup code: \(testKey)"
+            }
+            print("Logged into account \(testAddress) with wallet 2\n")
+            login2.text = ""
         }
     }
 }
