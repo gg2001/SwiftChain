@@ -274,7 +274,16 @@ class MyViewController : UIViewController {
     }
     @objc func mineFunc1() {
         transaction(from: "0000", to: "\(genesisAddress)", amount: 50, type: "normal")
-        balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
+        if accounts[String(describing: genesisAddress)] == nil {
+            balance1.text = "Balance: 0XSC"
+        } else {
+            balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
+        }
+        if accounts[String(describing: testAddress)] == nil {
+            balance2.text = "Balance: 0XSC"
+        } else {
+            balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+        }
         print("New block mined by: \(genesisAddress)")
         chainState()
     }
@@ -334,7 +343,16 @@ class MyViewController : UIViewController {
     }
     @objc func mineFunc2() {
         transaction(from: "0000", to: "\(testAddress)", amount: 50, type: "normal")
-        balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+        if accounts[String(describing: genesisAddress)] == nil {
+            balance1.text = "Balance: 0XSC"
+        } else {
+            balance1.text = "Balance: \(accounts[String(describing: genesisAddress)]!)XSC"
+        }
+        if accounts[String(describing: testAddress)] == nil {
+            balance2.text = "Balance: 0XSC"
+        } else {
+            balance2.text = "Balance: \(accounts[String(describing: testAddress)]!)XSC"
+        }
         print("New block mined by: \(testAddress)")
         chainState()
     }
